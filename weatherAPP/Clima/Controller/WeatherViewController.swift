@@ -8,7 +8,7 @@
 
 import UIKit
 
-class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManagerDelegate {
+class WeatherViewController: UIViewController {
 
     @IBOutlet weak var conditionImageView: UIImageView!
     @IBOutlet weak var temperatureLabel: UILabel!
@@ -24,35 +24,42 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
         
         searchTextField.delegate = self
     }
-
-    @IBAction func searchPressed(_ sender: UIButton) {
-        searchTextField.endEditing(true)
-        print(searchTextField.text!)
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        searchTextField.endEditing(true)
-        print(searchTextField.text!)
-        return true
-    }
-    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
-        if textField.text != ""{
-            return true
-        }else {
-            textField.placeholder = "Type something"
-            return false
 }
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        
-        if let city = searchTextField.text {
-            weatherManager.fetchWeather(cityName: city)
+//MARK: - UITextFieldDelegate
+
+extension WeatherViewController: UITextFieldDelegate{
+
+        @IBAction func searchPressed(_ sender: UIButton) {
+            searchTextField.endEditing(true)
+            print(searchTextField.text!)
         }
-        // Use searchTextField.text to get the weather for that city.
-        searchTextField.text = ""
+        
+        func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+            searchTextField.endEditing(true)
+            print(searchTextField.text!)
+            return true
+        }
+        func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+            if textField.text != ""{
+                return true
+            }else {
+                textField.placeholder = "Type something"
+                return false
     }
-    
+        }
+        
+        func textFieldDidEndEditing(_ textField: UITextField) {
+            
+            if let city = searchTextField.text {
+                weatherManager.fetchWeather(cityName: city)
+            }
+            // Use searchTextField.text to get the weather for that city.
+            searchTextField.text = ""
+        }
+}
+
+//MARK: - WeatherManagerDelegate
+extension WeatherViewController: WeatherManagerDelegate {
     
     func didUpdateWeather(weatherManager: WeatherManager, weather: WeatherModel){
         DispatchQueue.main.async {
